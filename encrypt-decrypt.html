@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>          
+  <head>                 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">                 
+    <title>Salaus - Tommi Koponen</title>                 
+    <style type="text/css">
+    #text{
+      position:absolute;
+    }                  
+    </style>     
+<script type="text/javascript">
+function begin(){
+  text = document.getElementById("text");
+  text.innerHTML = "";
+  input = document.getElementById("input");
+  input2 = document.getElementById("input2");
+  output = document.getElementById("output");
+  input.value = "";
+  input2.value = "";
+  output.value = "";
+  encryptKey = document.getElementById("encryptKey");
+  keyCheck = false;
+  keys = 0;
+  array = [];
+  binaryArray = [];
+}
+/*function generateCharacters(){
+  newCharacters = "";
+  for(var j=0;j<parseInt(key2.charAt(7))+parseInt(key2.charAt(3));j++){
+    newCharacters += String.fromCharCode(32+Math.floor(Math.random()*94));
+  }
+  return newCharacters;
+} */ 
+function encrypt(value){
+  j = 0;
+  binaryArray = [];
+  for(var i=0;i<value.length;i+=5){
+    binaryArray[j] = "1"+value.slice(i,i+5);
+    j++;     
+  }
+  newString3 = "";
+  for(var i=0;i<binaryArray.length;i++){
+    newString3 += String.fromCharCode(parseInt(binaryArray[i],2)+40);
+  }
+  return newString3;
+}
+function decrypt(value){
+  checkArray = [];
+  j = 0;
+  newString4 = "";
+  for(var i=0;i<value.length;i++){
+    newString4 += (value.charCodeAt(i)-40).toString(2);
+  }
+  for(var i=0;i<newString4.length;i+=12){
+    checkArray[j] = newString4.slice(i,i+6).replace(/^1/,"")+newString4.slice(i+6,i+12).replace(/^1/,"");
+    j++;
+  }
+  newString4 = "";
+  for(var i in checkArray){
+    newString4 += checkArray[i];
+  }
+  return newString4;
+}
+function toBinary(string){
+  newBinary = "";
+ /* if(keyCheck2){
+    characters = generateCharacters();
+    for(var i=0;i<characters.length;i++){
+      string = string.slice(0,parseInt(key2.charAt(i+j)))+characters.charAt(i)+string.slice(parseInt(key2.charAt(i+j)));
+    }
+  }*/
+  for(var i = 0;i<string.length;i++){
+    check = string.charCodeAt(i).toString(2);
+    if(check.length<10){
+      x = "";
+      for(var j = 0;j<10-check.length;j++){
+        x+="0";
+      }
+    }
+    check = x+check;
+    if(keyCheck){
+      if(i < key2.length){k = i;}
+      else{k = parseInt(i.toString(2).slice(0,4),2);}
+      if(check.charAt(parseInt(key2.charAt(k))) == "0"){
+        check=check.slice(0,parseInt(key2.charAt(k)))+"1"+check.slice(parseInt(key2.charAt(k))+1);
+      }
+      else{
+        check=check.slice(0,parseInt(key2.charAt(k)))+"0"+check.slice(parseInt(key2.charAt(k))+1);
+      }
+      if(check.charAt(parseInt(key2.charAt(key2.length-k-1))) == "0"){
+        check=check.slice(0,parseInt(key2.charAt(key2.length-k-1)))+"1"+check.slice(parseInt(key2.charAt(key2.length-k-1))+1);
+        z = 1;
+      }
+      else{
+        check=check.slice(0,parseInt(key2.charAt(key2.length-k-1)))+"0"+check.slice(parseInt(key2.charAt(key2.length-k-1))+1);
+        z = 0;
+      }
+      if(key2.charAt(k)<3){spot=9}
+      else if(key2.charAt(k)<6){spot=8}
+      else{spot=7}
+      if(check.charAt(spot) == "0"){
+        check=check.slice(0,spot)+"1"+check.slice(spot+1);
+      }
+      else{
+        check=check.slice(0,spot)+"0"+check.slice(spot+1);
+      }
+    }    
+    newBinary += check;
+  }
+  return newBinary;
+}
+function fromBinary(value){
+  value = value.toString();
+  newString2 = "";
+  j = 0;
+  array = [];
+  for(var i = 0;i<value.length;i+=10){
+    newString2 += String.fromCharCode(parseInt(value.slice(i,i+10),2));
+    array[j] = value.slice(i,i+10);
+    j++      
+  }
+  if(keyCheck){
+    newString2 = "";    
+    for(var i in array){
+      if(i < key2.length){k = i;}
+      else{k =parseInt(i.toString(2).slice(0,4),2);}
+      if(array[i].charAt(parseInt(key2.charAt(k))) == "0"){
+        array[i]=array[i].slice(0,parseInt(key2.charAt(k)))+"1"+array[i].slice(parseInt(key2.charAt(k))+1);
+      }
+      else{
+        array[i]=array[i].slice(0,parseInt(key2.charAt(k)))+"0"+array[i].slice(parseInt(key2.charAt(k))+1);
+      }
+      if(array[i].charAt(parseInt(key2.charAt(key2.length-k-1))) == "0"){
+        array[i]=array[i].slice(0,parseInt(key2.charAt(key2.length-k-1)))+"1"+array[i].slice(parseInt(key2.charAt(key2.length-k-1))+1);
+      }
+      else{
+        array[i]=array[i].slice(0,parseInt(key2.charAt(key2.length-k-1)))+"0"+array[i].slice(parseInt(key2.charAt(key2.length-k-1))+1);
+      }
+      if(key2.charAt(k)<3){spot=9}
+      else if(key2.charAt(k)<6){spot=8}
+      else{spot=7}
+      if(array[i].charAt(spot) == "0"){
+        array[i]=array[i].slice(0,spot)+"1"+array[i].slice(spot+1);
+      }
+      else{
+        array[i]=array[i].slice(0,spot)+"0"+array[i].slice(spot+1);
+      }
+    }
+    for(var i in array){
+      newString2 += String.fromCharCode(parseInt(array[i],2));
+    }
+/*    charArray = []
+    for(var i=0;i<parseInt(key2.charAt(7))+parseInt(key2.charAt(3));i++){
+      charArray[i] = parseInt(key2.charAt(i));  
+    }
+    b=0;
+    for(var i=charArray.length-1;i>-1;i--){
+      j = charArray[i];
+      if(j>newString2.length-1){
+        j = newString2.length-1;
+      }
+      newString2 = newString2.slice(0,j)+newString2.slice(j+1);
+    }     */
+    array = [];                                                     
+  }                                                                  
+  return newString2;
+}
+function generateKey(string){
+  keyCheck2 = false;
+  key = " "+string;
+  key1 = 0;
+  sum = 0;
+  for(var k=0; k<key.length;k++){
+    if(k%5 != 0){key1 += key.charCodeAt(k).toString(2);}
+    else{sum += parseInt(key1,2)*key.charCodeAt(k);key1=0;}
+    if(sum>1e+20){
+      sum = parseInt(key.charCodeAt(k).toString()+key.charCodeAt(k-1).toString);
+    }
+  }
+  key1 = sum+parseInt(key1,2);
+  key2 = Math.sqrt(parseInt(toBinary(key1.toString()),2)*key1).toString().replace(/[\.e\+]|0\b/g, "");
+  key2 = key2.charAt(7)+key2.charAt(key2.length-3)+key2;
+  keyCheck = true;
+  key1 = encrypt(toBinary(key1.toString()));
+  sum = 0;
+  for(var i=0;i<key1.length;i++){
+    sum += key1.charCodeAt(i);  
+  }
+  key2 = key2+sum.toString();
+  keyCheck2 = true;
+} 
+function clickFunction(){
+  keyCheck2 = false;
+  text.innerHTML = "";
+  output.value = "";
+  if(encryptKey.value != ""){
+    generateKey(encryptKey.value);
+  }else{generateKey("0000");} 
+  inputCheck = input.value;
+  result = fromBinary(decrypt(inputCheck));
+  output.value = result;
+  for(var i=100; i<result.length;i+=100){
+    result = result.slice(0,i)+"<br>"+result.slice(i);
+  }
+  text.innerHTML = result;
+  keyCheck = false;
+  keys = 0;  
+}
+function clickFunction2(){
+  keyCheck2 = false;
+  text.innerHTML = "";
+  output.value = "";
+  if(encryptKey.value != ""){
+    generateKey(encryptKey.value);
+  }else{generateKey("0000");}  
+  result = encrypt(toBinary(input2.value));
+  output.value = result;
+  for(var i=100; i<result.length;i+=100){
+    result = result.slice(0,i)+"<br>"+result.slice(i);
+  }
+  text.innerHTML = result;
+  keyCheck = false;
+  keys = 0;
+}
+function clearBoxes(){
+  text.innerHTML = "";
+  input.value = "";
+  output.value = "";
+  input2.value = "";
+  encryptKey.value = "";
+}
+</script>
+  <body onload="begin()">
+   <form>
+    A key to decrypt:<br>
+    <input type="text" id="input" onclick="input.select()">
+    <input type="button" onclick="clickFunction()" value="DECRYPT"><br>
+    any type of string to encrypt:<br>
+    <input type="text" id="input2" onclick="input2.select()">
+    <input type="button" onclick="clickFunction2()" value="ENCRYPT"><br>
+    cryption key to be used (optional):<br>
+    <input type="password" id="encryptKey"><br><br>
+    The final result(either encrypted or decrypted string, easy to copy from text box)<br>
+    <input type="text" id="output" onclick="output.select()">
+    <input type="button" onclick="output.select()" value="select"><br>
+    <input type="button" onclick="clearBoxes()" value="Clear text areas">
+   </form>
+   <div id="text"></div>
+  </body>
+</html>
